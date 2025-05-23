@@ -108,6 +108,19 @@
             <description>Control how content fits within the GtkPicture</description>
         </key>
 
+        <key name="screen-selection-mode" type="i">
+            <range min="0" max="2" />
+            <default>0</default>
+            <summary>Screen Selection Mode</summary>
+            <description>Determines which monitor(s) the live wallpaper will be displayed on. 0=All, 1=Primary, 2=Specific.</description>
+        </key>
+
+        <key name="screen-selection-specific-indices" type="s">
+            <default>""</default>
+            <summary>Specific Monitor Indices</summary>
+            <description>Comma-separated list of monitor indices (e.g., '0,2') to display on when Screen Selection Mode is 'Specific'.</description>
+        </key>
+
         <key name="startup-delay" type="i">
             <range min="0" max="10000" />
             <default>1000</default>

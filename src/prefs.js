@@ -43,6 +43,8 @@ export default class HanabiExtensionPreferences extends ExtensionPreferences {
         prefsRowBoolean(window, generalGroup, _('Mute Audio'), 'mute', '');
         prefsRowInt(window, generalGroup, _('Volume Level'), 'volume', '', 0, 100, 1, 10);
         prefsRowBoolean(window, generalGroup, _('Show Panel Menu'), 'show-panel-menu', '');
+        const screenSelectionModeRow = prefsRowScreenSelectionMode(window, generalGroup);
+        prefsRowSpecificMonitorIndices(window, generalGroup, screenSelectionModeRow);
 
         /**
          * Auto Pause
@@ -467,3 +469,70 @@ function prefsRowChangeWallpaperMode(window, prefsGroup) {
         settings.set_int('change-wallpaper-mode', row.selected);
     });
 }
+
+/**
+ * @param {Adw.PreferencesWindow} window AdwPreferencesWindow
+ * @param {Adw.PreferencesGroup} prefsGroup AdwPreferencesGroup
+ * @returns {Adw.ComboRow} The created ComboRow for screen selection mode.
+ */
+function prefsRowScreenSelectionMode(window, prefsGroup) {
+    const settings = window._settings;
+    const title = _('Display on');
+    const key = 'screen-selection-mode';
+
+    const items = Gtk.StringList.new([
+        _('All Monitors'),
+        _('Primary Monitor Only'),
+        _('Specific Monitors'),
+    ]);
+
+    const row = new Adw.ComboRow({
+        title,
+        model: items,
+        selected: settings.get_int(key),
+    });
+    prefsGroup.add(row);
+
+    row.connect('notify::selected', () => {
+        settings.set_int(key, row.selected);
+    });
+
+    return row;
+}
+
+/**
+ * @param {Adw.PreferencesWindow} window AdwPreferencesWindow
+ * @param {Adw.PreferencesGroup} prefsGroup AdwPreferencesGroup
+ * @param {Adw.ComboRow} screenSelectionModeRow The ComboRow for screen selection mode.
+ */
+function prefsRowSpecificMonitorIndices(window, prefsGroup, screenSelectionModeRow) {
+    const settings = window._settings;
+    const title = _('Specific Monitor Indices');
+    const subtitle = _('Enter comma-separated monitor indices (e.g., 0,1).');
+    const key = 'screen-selection-specific-indices';
+
+    const row = new Adw.EntryRow({
+        title,
+        text: settings.get_string(key),
+        show_apply_button: true,
+    });
+    row.set_subtitle(subtitle); // EntryRow doesn't have a direct subtitle prop in constructor like ActionRow
+    prefsGroup.add(row);
+
+    settings.bind(key, row, 'text', Gio.SettingsBindFlags.DEFAULT);
+
+    const updateVisibility = () => {
+        const isSpecificMode = settings.get_int('screen-selection-mode') === 2;
+        row.set_sensitive(isSpecificMode);
+        row.set_visible(isSpecificMode);
+    };
+
+    // Initial state
+    updateVisibility();
+
+    // Update when screen selection mode changes
+    screenSelectionModeRow.connect('notify::selected', updateVisibility);
+    // Also listen for direct GSettings key changes, in case something else changes it
+    settings.connect(`changed::${'screen-selection-mode'}`, updateVisibility);
+}
+

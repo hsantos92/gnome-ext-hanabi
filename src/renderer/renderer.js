@@ -123,6 +123,10 @@ const HanabiRenderer = GObject.registerClass(
 
             GLib.log_set_debug_enabled(isDebugMode);
 
+            // Screen selection settings
+            this._screenSelectionMode = extSettings ? extSettings.get_int('screen-selection-mode') : 0; // Default to 0 'All'
+            this._specificMonitorIndicesStr = extSettings ? extSettings.get_string('screen-selection-specific-indices') : "";
+
             this._hanabiWindows = [];
             this._pictures = [];
             this._sharedPaintable = null;
@@ -195,7 +199,40 @@ const HanabiRenderer = GObject.registerClass(
                     isDebugMode = settings.get_boolean(key);
                     GLib.log_set_debug_enabled(isDebugMode);
                     break;
+                case 'screen-selection-mode':
+                    this._screenSelectionMode = settings.get_int(key);
+                    this._rebuildUI();
+                    break;
+                case 'screen-selection-specific-indices':
+                    this._specificMonitorIndicesStr = settings.get_string(key);
+                    this._rebuildUI();
+                    break;
                 }
+            });
+        }
+
+        _rebuildUI() {
+            // Destroy existing windows and clear related resources
+            this._hanabiWindows.forEach(window => window.destroy());
+            this._hanabiWindows = [];
+            this._pictures = [];
+            // Resetting _sharedPaintable might be too aggressive if the video source itself hasn't changed.
+            // However, _getWidgetFromSharedPaintable creates new pictures that are added to this._pictures,
+            // and _buildUI re-populates this._pictures. If _sharedPaintable is not reset,
+            // and the first monitor is no longer selected, _sharedPaintable might not be recreated correctly
+            // by _getWidgetFromSink or _getGtkStockWidget if they are skipped.
+            // For simplicity and robustness in screen switching, let's reset it.
+            // If _setupGst or video source changes, _sharedPaintable is handled by those paths.
+            this._sharedPaintable = null; 
+
+            // Re-fetch monitors in case of changes (e.g. plugging/unplugging)
+            // This might not be strictly necessary for just settings changes, but good for robustness
+            this._display = Gdk.Display.get_default();
+            this._monitors = this._display ? [...this._display.get_monitors()] : [];
+            
+            this._buildUI();
+            this._hanabiWindows.forEach(window => {
+                window.present();
             });
         }
 
@@ -310,59 +347,89 @@ const HanabiRenderer = GObject.registerClass(
         }
 
         _buildUI() {
+            let specificIndices = [];
+            if (this._screenSelectionMode === 2 && this._specificMonitorIndicesStr) {
+                specificIndices = this._specificMonitorIndicesStr.split(',')
+                                    .map(s => parseInt(s.trim(), 10))
+                                    .filter(n => !isNaN(n));
+            }
+
             this._monitors.forEach((gdkMonitor, index) => {
-                let widget = this._getWidgetFromSharedPaintable();
-
-                // Avoid creating another instance if we couldn't get the shared paintable
-                if (index > 0 && !widget)
-                    return;
-
-                if (!widget) {
-                    if (!forceMediaFile && haveGstPlay) {
-                        let sink = null;
-                        if (!forceGtk4PaintableSink) {
-                            // Try to find "clappersink" for best performance
-                            sink = Gst.ElementFactory.make(
-                                'clappersink',
-                                'clappersink'
-                            );
-                        }
-
-                        // Try "gtk4paintablesink" from gstreamer-rs plugins as 2nd best choice
-                        if (!sink) {
-                            sink = Gst.ElementFactory.make(
-                                'gtk4paintablesink',
-                                'gtk4paintablesink'
-                            );
-                        }
-
-                        if (sink)
-                            widget = this._getWidgetFromSink(sink);
+                let createThisWindow = false;
+                if (this._screenSelectionMode === 0) { // All monitors
+                    createThisWindow = true;
+                } else if (this._screenSelectionMode === 1) { // Primary monitor only
+                    if (gdkMonitor.is_primary()) {
+                        createThisWindow = true;
                     }
-
-                    if (!widget)
-                        widget = this._getGtkStockWidget();
+                } else if (this._screenSelectionMode === 2) { // Specific monitors
+                    if (specificIndices.includes(index)) {
+                        createThisWindow = true;
+                    }
                 }
 
-                let geometry = gdkMonitor.get_geometry();
-                let state = {
-                    position: [geometry.x, geometry.y],
-                    keepAtBottom: true,
-                    keepMinimized: true,
-                    keepPosition: true,
-                };
-                let window = new HanabiRendererWindow(
-                    this,
-                    nohide
-                        ? `Hanabi Renderer #${index} (using ${this._gstImplName})`
-                        : `@${applicationId}!${JSON.stringify(state)}|${index}`,
-                    widget,
-                    gdkMonitor
-                );
+                if (createThisWindow) {
+                    // Determine if this is the first window being created in this _buildUI call.
+                    // This is important because _sharedPaintable is initialized by the first window's widget creation.
+                    const isFirstSelectedWindow = this._pictures.length === 0 && this._sharedPaintable === null;
 
-                this._hanabiWindows.push(window);
+                    let widget = null;
+                    // If we already have a shared paintable (from a previous monitor in this same _buildUI pass,
+                    // or if it was not reset during _rebuildUI), try to use it.
+                    if (this._sharedPaintable) {
+                        widget = this._getWidgetFromSharedPaintable();
+                    }
+                    
+                    // If no widget yet (either no _sharedPaintable, or _getWidgetFromSharedPaintable failed,
+                    // or this is the designated first window to create the paintable source)
+                    if (!widget) {
+                        if (!forceMediaFile && haveGstPlay) {
+                            let sink = null;
+                            if (!forceGtk4PaintableSink) {
+                                sink = Gst.ElementFactory.make('clappersink', 'clappersink');
+                            }
+                            if (!sink) {
+                                sink = Gst.ElementFactory.make('gtk4paintablesink', 'gtk4paintablesink');
+                            }
+                            if (sink) {
+                                widget = this._getWidgetFromSink(sink);
+                            }
+                        }
+                        if (!widget) {
+                            widget = this._getGtkStockWidget();
+                        }
+                    }
+                    
+                    // This check is crucial. If widget creation failed (e.g. videoPath is invalid),
+                    // _getWidgetFromSink or _getGtkStockWidget might return null or not set up _sharedPaintable.
+                    if (!widget) {
+                        console.warn(`Failed to create widget for monitor ${index}. Skipping.`);
+                        return; // Skip this monitor if widget creation failed
+                    }
+
+                    let geometry = gdkMonitor.get_geometry();
+                    let state = {
+                        position: [geometry.x, geometry.y],
+                        keepAtBottom: true,
+                        keepMinimized: true,
+                        keepPosition: true,
+                    };
+                    let window = new HanabiRendererWindow(
+                        this,
+                        nohide
+                            ? `Hanabi Renderer #${index} (using ${this._gstImplName})`
+                            : `@${applicationId}!${JSON.stringify(state)}|${index}`,
+                        widget,
+                        gdkMonitor
+                    );
+                    this._hanabiWindows.push(window);
+                }
             });
-            console.log(`using ${this._gstImplName} for video output`);
+            if (this._hanabiWindows.length > 0) {
+                console.log(`using ${this._gstImplName} for video output on selected monitors.`);
+            } else {
+                console.log('No monitors selected or no windows created.');
+            }
         }
 
         _getWidgetFromSharedPaintable() {
@@ -722,3 +789,4 @@ Gst.init(null);
 
 let renderer = new HanabiRenderer();
 renderer.run(ARGV);
+
