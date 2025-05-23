@@ -516,7 +516,7 @@ function prefsRowSpecificMonitorIndices(window, prefsGroup, screenSelectionModeR
         text: settings.get_string(key),
         show_apply_button: true,
     });
-    row.set_subtitle(subtitle); // EntryRow doesn't have a direct subtitle prop in constructor like ActionRow
+   
     prefsGroup.add(row);
 
     settings.bind(key, row, 'text', Gio.SettingsBindFlags.DEFAULT);
