@@ -145,7 +145,7 @@ export const LiveWallpaper = GObject.registerClass(
 
         _getRenderer() {
             let windowActors = [];
-            windowActors = global.get_window_actors(false);
+            windowActors = global.get_window_actors();
 
             // Find renderer by `applicationId` and monitor index.
             const findRenderer = monitor => {
