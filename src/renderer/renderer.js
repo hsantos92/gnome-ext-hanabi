@@ -359,8 +359,13 @@ const HanabiRenderer = GObject.registerClass(
                 if (this._screenSelectionMode === 0) { // All monitors
                     createThisWindow = true;
                 } else if (this._screenSelectionMode === 1) { // Primary monitor only
-                    if (gdkMonito(gdkMonitor.get_display().get_primary_monitor() === gdkMonitor)r.is_primary()) {
-                        createThisWindow = true;
+                    if (typeof gdkMonitor.is_primary === 'function') {
+                        if (gdkMonitor.is_primary())
+                            createThisWindow = true;
+                    } else {
+                        const primaryMonitor = gdkMonitor.get_display().get_primary_monitor();
+                        if (primaryMonitor === gdkMonitor)
+                            createThisWindow = true;
                     }
                 } else if (this._screenSelectionMode === 2) { // Specific monitors
                     if (specificIndices.includes(index)) {
