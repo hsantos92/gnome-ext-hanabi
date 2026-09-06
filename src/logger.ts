@@ -17,7 +17,7 @@
 
 import Gio from 'gi://Gio';
 
-const schemaId = 'io.github.jeffshee.hanabi-extension';
+const schemaId = 'io.github.hsantos92.hanabi-extension';
 const logPrefix = 'Hanabi:';
 
 export class Logger {

@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  UUID: hanabi-extension@jeffshee.github.io
+  UUID: hanabi-extension@hsantos92.github.io
 
 jobs:
   # Static analysis only; no system deps needed, so it runs alongside build.

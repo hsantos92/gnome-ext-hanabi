@@ -1,6 +1,6 @@
-UUID    := hanabi-extension@jeffshee.github.io
+UUID    := hanabi-extension@hsantos92.github.io
 POT_DIR := src/po
-POT_FILE := $(POT_DIR)/$(UUID).pot
+POT_FILE := $(POT_DIR)/hanabi-extension@jeffshee.github.io.pot
 
 .PHONY: build typecheck install clean enable disable prefs reset uninstall renderer log lint lint-fix pot merge-po help
 

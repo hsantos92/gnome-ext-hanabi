@@ -16,7 +16,7 @@ while True:
 
     if video_paths:
         video_path = random.choice(video_paths)
-        gsettings_command = f"gsettings set io.github.jeffshee.hanabi-extension video-path '{video_path}'"
+        gsettings_command = f"gsettings set io.github.hsantos92.hanabi-extension video-path '{video_path}'"
         print(f"Video path: {video_path}")
         subprocess.run(["bash", "-c", gsettings_command])
 

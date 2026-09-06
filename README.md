@@ -4,7 +4,24 @@
 <p align="center">Hanabi 花火【はなび】(n) fireworks</p>
 <p align="center">( ・ω・)o─━・*:'・:・゜'・:※</p>
 
-# GNOME Shell Extension - Hanabi
+# Hanabi Custom
+
+This personal fork uses extension ID `hanabi-extension@hsantos92.github.io` so
+updates for the official Hanabi extension cannot overwrite it. Its settings and
+renderer D-Bus name are also separate. Install updates from this repository;
+upstream improvements must be merged into this fork before rebuilding.
+
+When switching from the official ID, disable **Hanabi Extension** and enable
+**Hanabi Custom** after logging out and back in. Run only one copy at a time.
+To preserve existing settings before switching, run:
+
+```bash
+dconf dump /io/github/jeffshee/hanabi-extension/ > hanabi-settings-backup.ini
+dconf load /io/github/hsantos92/hanabi-extension/ < hanabi-settings-backup.ini
+```
+
+Based on [Hanabi by Jeff Shee and contributors](https://github.com/jeffshee/gnome-ext-hanabi).
+
 
 If you like my project, please consider buying me a coffee!! (⁎˃ ꇴ ˂⁎)ｯ
 
@@ -50,7 +67,7 @@ Please click on the image to view _(redirect to YouTube)_
 - **GNOME 50 and later** (TypeScript, Wayland only) 🔥
 
     ```bash
-    git clone https://github.com/jeffshee/gnome-ext-hanabi.git
+    git clone -b main https://github.com/hsantos92/gnome-ext-hanabi.git
     ```
 
 - **GNOME 45–50** (JavaScript, X11 and Wayland)
@@ -123,7 +140,7 @@ See the [distro-specific guides](docs/distro/) for installation instructions.
    If you use the [Blur My Shell](https://github.com/aunetx/blur-my-shell) extension with **Applications → Applications blur → Enable all by default** turned on, add an exception for the Hanabi renderer.
 
     In Blur My Shell settings, go to **Applications → Applications blur → Blacklist** and add:  
-     `io.github.jeffshee.HanabiRenderer`
+     `io.github.hsantos92.HanabiRenderer`
 
 ## Advanced Usage
 

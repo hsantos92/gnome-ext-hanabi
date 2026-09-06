@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-    <schema id="io.github.jeffshee.hanabi-extension" path="/io/github/jeffshee/hanabi-extension/">
+    <schema id="io.github.hsantos92.hanabi-extension" path="/io/github/hsantos92/hanabi-extension/">
         <key name="video-path" type="s">
             <default>''</default>
             <summary>Video Path</summary>

@@ -65,7 +65,7 @@ const haveGstAudio = GstAudio !== null;
 const useGstGL = isGstVersionAtLeast(1, 24);
 
 let extSettings: Gio.Settings | null = null;
-const extSchemaId = 'io.github.jeffshee.hanabi-extension';
+const extSchemaId = 'io.github.hsantos92.hanabi-extension';
 const settingsSchemaSource = Gio.SettingsSchemaSource.get_default();
 if (settingsSchemaSource?.lookup(extSchemaId, false))
     extSettings = Gio.Settings.new(extSchemaId);

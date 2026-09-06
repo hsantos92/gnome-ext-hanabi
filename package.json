@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Live Wallpaper for GNOME",
   "main": "src/_build/extension.js",
-  "repository": "https://github.com/jeffshee/gnome-ext-hanabi",
+  "repository": "https://github.com/hsantos92/gnome-ext-hanabi",
   "author": "Jeff Shee",
   "license": "GPL-3.0-or-later",
   "type": "module",

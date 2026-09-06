@@ -1,5 +1,5 @@
 i18n.gettext(
-	uuid,
+	'hanabi-extension@jeffshee.github.io',
 	args: [
 		'--sort-by-file',
 		'--from-code=UTF-8'
