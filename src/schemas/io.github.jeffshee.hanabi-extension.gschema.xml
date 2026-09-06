@@ -13,6 +13,12 @@
             <description>Monitor connector for live wallpaper, or empty for all monitors. If disconnected, no live wallpaper is shown.</description>
         </key>
 
+        <key name="pause-on-steam-game" type="b">
+            <default>false</default>
+            <summary>Pause on Steam Game</summary>
+            <description>Pause while a Steam game window is present on any workspace, even when minimized. Checks every three seconds. The Steam client alone does not pause playback.</description>
+        </key>
+
         <key name="mute" type="b">
             <default>false</default>
             <summary>Mute Audio</summary>

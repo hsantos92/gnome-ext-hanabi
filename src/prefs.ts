@@ -54,6 +54,8 @@ export default class HanabiExtensionPreferences extends ExtensionPreferences {
         prefsRowPauseOnMaximizeOrFullscreen(win, autoPauseGroup);
         prefsRowBoolean(win, autoPauseGroup, _('Pause on Window Focus'), 'pause-on-focus',
             _('Pause playback when any window is focused'));
+        prefsRowBoolean(win, autoPauseGroup, _('Pause on Steam Game'), 'pause-on-steam-game',
+            _('Pause while a Steam game window is open, including minimized games on other workspaces'));
         prefsRowPauseOnBattery(win, autoPauseGroup);
         prefsRowInt(win, autoPauseGroup, _('Low Battery Threshold'), 'low-battery-threshold',
             _('Set the threshold percentage for low battery level'), 0, 100, 5, 10);

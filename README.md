@@ -88,6 +88,18 @@ output is disconnected, live wallpaper stops until it is reconnected. Moving a
 display to another port may require selecting it again. Mirrored displays share
 the same desktop and cannot show different wallpapers.
 
+### Pause while playing Steam games
+
+Enable **Auto Pause → Pause on Steam Game** to pause while a detected Steam game
+window is open, including minimized games and games on other workspaces. Playback
+resumes within about three seconds after the last game window closes, unless
+another pause condition or your manual pause still applies. The Steam library
+alone does not trigger this setting.
+
+Detection uses Proton's `steam_app_<id>` window identity and Steam app IDs from
+window processes. Games without a window or without these identifiers may not be
+detected; **Pause on Maximize or Fullscreen → Any Monitor** is a broader fallback.
+
 ### Distro-specific Guides
 
 See the [distro-specific guides](docs/distro/) for installation instructions.

@@ -42,6 +42,7 @@ export class AutoPause {
         this.modules = [
             new PauseOnMaximizeOrFullscreenModule(settings),
             new PauseOnFocusModule(settings),
+            new PauseOnSteamGameModule(settings),
             new PauseOnBatteryModule(settings),
             new PauseOnMprisPlayingModule(settings),
         ];
@@ -701,6 +702,77 @@ const PauseOnMprisPlayingModule = GObject.registerClass(
                 mpris.proxy.disconnect(mprisPropertiesChangedId)
             );
             this.mediaPlayers = {};
+        }
+    }
+);
+
+// Steam/Proton games expose an app ID in their window class or process environment.
+// Scan windows across all workspaces, including minimized games. No process scan
+// or polling occurs when the setting is disabled.
+const PauseOnSteamGameModule = GObject.registerClass(
+    class PauseOnSteamGameModule extends AutoPauseModule {
+        private timerId = 0;
+        private settingsId = 0;
+        private gameRunning = false;
+
+        override enable(): void {
+            this.settingsId = this.settings.connect('changed::pause-on-steam-game', () =>
+                this.configure());
+            this.configure();
+        }
+
+        private configure(): void {
+            if (this.timerId)
+                GLib.source_remove(this.timerId);
+            this.timerId = 0;
+            if (this.settings.get_boolean('pause-on-steam-game')) {
+                this.checkWindows();
+                this.timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
+                    this.checkWindows();
+                    return GLib.SOURCE_CONTINUE;
+                });
+            } else {
+                this.gameRunning = false;
+                this.update();
+            }
+        }
+
+        private checkWindows(): void {
+            const running = global.display.list_all_windows().some(window => {
+                if ([window.get_wm_class(), window.get_wm_class_instance(),
+                    window.get_gtk_application_id()].some(value =>
+                    /^steam_app_[1-9][0-9]*$/i.test(value ?? '')))
+                    return true;
+                const pid = window.get_pid();
+                if (pid <= 0)
+                    return false;
+                try {
+                    const [ok, contents] = GLib.file_get_contents(`/proc/${pid}/environ`);
+                    return ok && new TextDecoder().decode(contents).split('\0').some(value =>
+                        /^(SteamAppId|SteamGameId)=[1-9][0-9]*$/.test(value));
+                } catch {
+                    // A window may outlive its process, or /proc access may be denied.
+                    return false;
+                }
+            });
+            if (running !== this.gameRunning) {
+                this.gameRunning = running;
+                this.update();
+            }
+        }
+
+        override shouldAutoPause(): boolean {
+            return this.gameRunning;
+        }
+
+        override disable(): void {
+            if (this.timerId)
+                GLib.source_remove(this.timerId);
+            if (this.settingsId)
+                this.settings.disconnect(this.settingsId);
+            this.timerId = 0;
+            this.settingsId = 0;
+            this.gameRunning = false;
         }
     }
 );
