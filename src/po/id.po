@@ -2,144 +2,201 @@
 # Copyright (C) 2023 Jeff Shee (jeffshee8969@gmail.com)
 # This file is distributed under the same license as the gnome-ext-hanabi package.
 # Arif Ardiansyah <arifard49@gmail.com>, 2025.
+# Farhan SP <fdemogod@gmail.com>, 2025.
+# Naufal F <nfatihussalam@students.unnes.ac.id>, 2025.
+# Muhammad Aidil Fikri <aidil.233040059@mail.unpas.ac.id>, 2026.
+# Arif Budiman <arifpedia@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-25 18:29+0900\n"
-"PO-Revision-Date: 2025-05-13 04:01+0000\n"
-"Last-Translator: Arif Ardiansyah <arifard49@gmail.com>\n"
-"Language-Team: Indonesian <https://hosted.weblate.org/projects/"
-"gnome-ext-hanabi/gnome-ext-hanabi/id/>\n"
+"POT-Creation-Date: 2026-07-25 01:03+0900\n"
+"PO-Revision-Date: 2026-06-10 15:01+0000\n"
+"Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
+"Language-Team: Indonesian <https://hosted.weblate.org/projects/gnome-ext-"
+"hanabi/gnome-ext-hanabi/id/>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 2026.6\n"
 
-#: src/panelMenu.js:70 src/panelMenu.js:85
+#: src/panelMenu.ts:73 src/panelMenu.ts:87
 msgid "Pause"
 msgstr "Jeda"
 
-#: src/panelMenu.js:70 src/panelMenu.js:85
+#: src/panelMenu.ts:73 src/panelMenu.ts:87
 msgid "Play"
-msgstr ""
+msgstr "Mulai"
 
-#: src/panelMenu.js:94 src/panelMenu.js:103
+#: src/panelMenu.ts:94 src/panelMenu.ts:102
 msgid "Unmute Audio"
-msgstr ""
+msgstr "Mulai suara"
 
-#: src/panelMenu.js:94 src/panelMenu.js:103 src/prefs.js:43
+#: src/panelMenu.ts:94 src/panelMenu.ts:102 src/prefs.ts:42
 msgid "Mute Audio"
-msgstr ""
+msgstr "Diamkan Suara"
 
-#: src/panelMenu.js:110
+#: src/panelMenu.ts:109
 msgid "Next Wallpaper"
-msgstr ""
+msgstr "Wallpaper Selanjutnya"
 
-#: src/panelMenu.js:125
+#: src/panelMenu.ts:126
 msgid "Preferences"
-msgstr ""
+msgstr "Preferensi"
 
-#: src/prefs.js:38
+#: src/prefs.ts:38
 msgid "General"
-msgstr ""
+msgstr "Menu"
 
-#: src/prefs.js:44
+#: src/prefs.ts:43
 msgid "Volume Level"
-msgstr ""
+msgstr "Tingkat Suara"
 
-#: src/prefs.js:45
+#: src/prefs.ts:44
+msgid "Random Start Position"
+msgstr "Posisi Awal Acak"
+
+#: src/prefs.ts:45
+msgid "Start playback from a random position each time a video starts"
+msgstr "Mulai pemutaran dari posisi acak setiap kali video dimulai"
+
+#: src/prefs.ts:46
 msgid "Show Panel Menu"
-msgstr ""
+msgstr "Tampilkan Panel Menu"
 
-#: src/prefs.js:51
+#: src/prefs.ts:47
+msgid "Show on Lock Screen"
+msgstr "Tampilkan di Layar Kunci"
+
+#: src/prefs.ts:48
+msgid "Show the live wallpaper on the lock screen"
+msgstr "Tampilkan wallpaper hidup di layar kunci"
+
+#: src/prefs.ts:50
 msgid "Auto Pause"
 msgstr "Jeda Otomatis"
 
-#: src/prefs.js:56
+#: src/prefs.ts:53
+msgid "Pause on Window Focus"
+msgstr "Jeda saat Jendela Fokus"
+
+#: src/prefs.ts:54
+msgid "Pause playback when any window is focused"
+msgstr "Jeda pemutaran saat jendela apa pun sedang fokus"
+
+#: src/prefs.ts:56
 msgid "Low Battery Threshold"
-msgstr ""
+msgstr "Ambang Batas Baterai Rendah"
 
-#: src/prefs.js:56
+#: src/prefs.ts:57
 msgid "Set the threshold percentage for low battery level"
-msgstr ""
+msgstr "Atur persentase ambang batas untuk tingkat baterai rendah"
 
-#: src/prefs.js:60
+#: src/prefs.ts:58
 msgid "Pause on Media Player Playing"
-msgstr ""
+msgstr "Jeda saat Memulai Media Player"
 
-#: src/prefs.js:62
+#: src/prefs.ts:59
 msgid "Pause playback when an MPRIS media player is playing media"
-msgstr ""
+msgstr "Jeda video jika MPRIS memainkan media"
 
-#: src/prefs.js:69
+#: src/prefs.ts:61
 msgid "Wallpaper Changer"
-msgstr ""
+msgstr "Pengubah Wallpaper"
 
-#: src/prefs.js:72
+#: src/prefs.ts:63
 msgid "Change Wallpaper Automatically"
 msgstr "Ubah Wallpaper Otomatis"
 
-#: src/prefs.js:75
+#: src/prefs.ts:66
 msgid "Change Wallpaper Interval (minutes)"
 msgstr "Ubah Interval Wallpaper (menit)"
 
-#: src/prefs.js:81
+#: src/prefs.ts:69
+msgid "Overview"
+msgstr "Ikhtisar"
+
+#: src/prefs.ts:71
+msgid "Corner Radius"
+msgstr "Radius Sudut"
+
+#: src/prefs.ts:72
+msgid ""
+"Rounded corner radius in pixels for workspace background in the overview"
+msgstr ""
+"Radius sudut membulat dalam piksel untuk latar belakang ruang kerja pada "
+"tampilan ikhtisar"
+
+#: src/prefs.ts:74
 msgid "Experimental"
 msgstr "Eksperimental"
 
-#: src/prefs.js:87
+#: src/prefs.ts:76
 msgid "Experimental VA Plugin"
-msgstr ""
+msgstr "Eksperimental VA Plugin"
 
-#: src/prefs.js:89
+#: src/prefs.ts:77
 msgid ""
 "Enable VA decoders which improve performance for Intel/AMD Wayland users"
 msgstr ""
+"Aktifkan VA decoder untuk meningkatkan performa dari pengguna Intel/AMD "
+"Wayland"
 
-#: src/prefs.js:94
+#: src/prefs.ts:78
 msgid "NVIDIA Stateless Decoders"
 msgstr ""
 
-#: src/prefs.js:96
+#: src/prefs.ts:79
 msgid "Use new stateless NVIDIA decoders"
-msgstr ""
+msgstr "Gunakan dekoder NVIDIA stateless terbaru"
 
-#: src/prefs.js:103
+#: src/prefs.ts:81
 msgid "Developer"
-msgstr ""
+msgstr "Pengembang"
 
-#: src/prefs.js:109
+#: src/prefs.ts:83
 msgid "Debug Mode"
-msgstr ""
+msgstr "Mode Debug"
 
-#: src/prefs.js:111
+#: src/prefs.ts:84
 msgid "Print debug messages to log"
-msgstr ""
+msgstr "Cetak pesan debug ke log"
 
-#: src/prefs.js:116
-msgid "Force gtk4paintablesink"
-msgstr ""
+#: src/prefs.ts:85
+msgid "Prefer clappersink"
+msgstr "Utamakan clappersink"
 
-#: src/prefs.js:118
-msgid "Force use of gtk4paintablesink for video playback"
-msgstr ""
+#: src/prefs.ts:86
+msgid "Prefer clappersink over gtk4paintablesink for video playback"
+msgstr "Utamakan clappersink dibanding gtk4paintablesink untuk pemutaran video"
 
-#: src/prefs.js:123
+#: src/prefs.ts:87
 msgid "Force GtkMediaFile"
-msgstr ""
+msgstr "Paksa GtkMediaFile"
 
-#: src/prefs.js:125
+#: src/prefs.ts:88
 msgid "Force use of GtkMediaFile for video playback"
-msgstr ""
+msgstr "Paksa penggunaan dari GtkMediaFile untuk video playback"
 
-#: src/prefs.js:127
+#: src/prefs.ts:89
+msgid "Enable Graphics Offload"
+msgstr "Aktifkan Offload Grafis"
+
+#: src/prefs.ts:90
+#, fuzzy
+#| msgid ""
+#| "Enable graphics offload for improved performance (requires GTK 4.14+)"
+msgid "Enable graphics offload for improved performance"
+msgstr ""
+"Aktifkan offload grafis untuk meningkatkan performa (memerlukan GTK 4.14+)"
+
+#: src/prefs.ts:91
 msgid "Startup Delay"
-msgstr ""
+msgstr "Jeda Memulai"
 
-#: src/prefs.js:127
+#: src/prefs.ts:92
 msgid ""
 "Add a startup delay (in milliseconds) to mitigate compatibility issues with "
 "other extensions"
@@ -147,43 +204,50 @@ msgstr ""
 "Tambahkan penundaan startup (dalam milidetik) untuk mengurangi masalah "
 "kompatibilitas dengan ekstensi lainnya"
 
-#: src/prefs.js:214
-msgid "Video Path"
-msgstr ""
+#: src/prefs.ts:94
+msgid "Border Stroke"
+msgstr "Ketebalan Garis Tepi"
 
-#: src/prefs.js:220 src/prefs.js:245 src/prefs.js:279 src/prefs.js:300
+#: src/prefs.ts:95
+msgid ""
+"Border width in pixels drawn inside the rounded-rect bounds (0 = disabled)"
+msgstr ""
+"Lebar tepi dalam piksel yang digambar di dalam batas rounded-rect (0 = "
+"dinonaktifkan)"
+
+#: src/prefs.ts:160
+msgid "Video Path"
+msgstr "Lokasi Video"
+
+#: src/prefs.ts:166 src/prefs.ts:191 src/prefs.ts:207 src/prefs.ts:228
 msgid "None"
 msgstr "Tidak ada"
 
-#: src/prefs.js:232
-msgid "Open File"
-msgstr "Buka File"
-
-#: src/prefs.js:237 src/prefs.js:293
-msgid "Cancel"
-msgstr "Batal"
-
-#: src/prefs.js:238 src/prefs.js:254 src/prefs.js:294 src/prefs.js:309
+#: src/prefs.ts:172 src/prefs.ts:213
 msgid "Open"
 msgstr "Buka"
 
-#: src/prefs.js:273
+#: src/prefs.ts:182
+msgid "Open File"
+msgstr "Buka File"
+
+#: src/prefs.ts:201
 msgid "Change Wallpaper Directory Path"
 msgstr "Ubah Jalur Direktori Wallpaper"
 
-#: src/prefs.js:288
+#: src/prefs.ts:220
 msgid "Select Directory"
-msgstr ""
+msgstr "Pilih Direktori"
 
-#: src/prefs.js:328
+#: src/prefs.ts:238
 msgid "Fit Mode"
 msgstr ""
 
-#: src/prefs.js:329
+#: src/prefs.ts:239
 msgid "Control how wallpaper fits within the monitor"
-msgstr ""
+msgstr "Kontrol bagaimana wallpaper dapat sesuai di monitor"
 
-#: src/prefs.js:330
+#: src/prefs.ts:240
 msgid ""
 "\n"
 "    <b>Fill</b>: Stretch the wallpaper to fill the monitor.\n"
@@ -195,36 +259,42 @@ msgid ""
 "needed, otherwise keep its original size.\n"
 "    "
 msgstr ""
+"\n"
+"    <b>Fill</b>: Regangkan latar belakang untuk memenuhi monitor.\n"
+"<b>Contain</b>: Perbesar latar belakang agar sesuai dengan monitor (rasio "
+"aspek yang tajam).\n"
+"<b>Cover</b>: Ukur latar belakang untuk menutupi monitor (rasio aspek "
+"tajam).\n"
+"<b>Scale-down</b>: Meningkatkan latar belakang agar sesuai dengan monitor "
+"jika diperlukan. Jika tidak, menjaga ukuran asli latar belakang.\n"
+".\n"
+"    "
 
-#: src/prefs.js:338
+#: src/prefs.ts:248
 msgid "Fill"
-msgstr ""
+msgstr "Penuh"
 
-#: src/prefs.js:339
+#: src/prefs.ts:249
 msgid "Contain"
-msgstr ""
+msgstr "Perbesar"
 
-#: src/prefs.js:340
+#: src/prefs.ts:250
 msgid "Cover"
-msgstr ""
+msgstr "Menutup"
 
-#: src/prefs.js:341
+#: src/prefs.ts:251
 msgid "Scale-down"
-msgstr ""
+msgstr "Turunkan"
 
-#: src/prefs.js:354
-msgid "This feature requires Gtk 4.8 or above"
-msgstr ""
-
-#: src/prefs.js:371
+#: src/prefs.ts:274
 msgid "Pause on Maximize or Fullscreen"
-msgstr ""
+msgstr "Jeda saat jendela maksimal atau layar penuh"
 
-#: src/prefs.js:372
+#: src/prefs.ts:275
 msgid "Pause playback when there is maximized or fullscreen window"
-msgstr ""
+msgstr "Jeda pemutaran ketika  jendela maksimum atau layar penuh"
 
-#: src/prefs.js:373
+#: src/prefs.ts:276
 msgid ""
 "\n"
 "    <b>Never</b>: Disable this feature.\n"
@@ -234,28 +304,35 @@ msgid ""
 "fullscreen windows on all monitors.\n"
 "    "
 msgstr ""
+"\n"
+"    <b>Tidak pernah</b>: Nonaktifkan fitur ini.\n"
+"    <b>Monitor Apa pun</b>: Jeda video ketika ada jendela yang dimaksimalkan "
+"atau layar penuh pada monitor apa pun.\n"
+"    <b>Semua Monitor</b>: Jeda video ketika ada jendela yang dimaksimalkan "
+"atau layar penuh pada semua monitor.\n"
+"    "
 
-#: src/prefs.js:380 src/prefs.js:416
+#: src/prefs.ts:282 src/prefs.ts:309
 msgid "Never"
-msgstr ""
+msgstr "Jangan Pernah"
 
-#: src/prefs.js:381
+#: src/prefs.ts:282
 msgid "Any Monitor"
 msgstr "Monitor apa pun"
 
-#: src/prefs.js:382
+#: src/prefs.ts:282
 msgid "All Monitors"
 msgstr "Semua Monitor"
 
-#: src/prefs.js:407
+#: src/prefs.ts:301
 msgid "Pause on Battery"
-msgstr ""
+msgstr "Jeda saat menggunakan baterai"
 
-#: src/prefs.js:408
+#: src/prefs.ts:302
 msgid "Pause playback when the device is on battery or the battery is low"
-msgstr ""
+msgstr "Jeda video jika perangkat menggunakan baterai atau baterai lemah"
 
-#: src/prefs.js:409
+#: src/prefs.ts:303
 msgid ""
 "\n"
 "    <b>Never</b>: Disable this feature.\n"
@@ -264,24 +341,30 @@ msgid ""
 "    <b>Always</b>: Pause playback when the device is on battery.\n"
 "    "
 msgstr ""
+"\n"
+"    <b>Tidak pernah</b>: Nonaktifkan fitur ini.\n"
+"    <b>Baterai Lemah</b>: Jeda video saat perangkat dalam kondisi baterai "
+"lemah (di bawah batas).\n"
+"    <b>Selalu</b>: Jeda video saat perangkat menggunakan baterai.\n"
+"    "
 
-#: src/prefs.js:417
+#: src/prefs.ts:309
 msgid "Low Battery"
-msgstr ""
+msgstr "Baterai Rendah"
 
-#: src/prefs.js:418
+#: src/prefs.ts:309
 msgid "Always"
 msgstr "Selalu"
 
-#: src/prefs.js:443
+#: src/prefs.ts:331
 msgid "Change Wallpaper Mode"
 msgstr "Ubah Mode Wallpaper"
 
-#: src/prefs.js:444
+#: src/prefs.ts:332
 msgid "Control how to change wallpapers automatically"
-msgstr ""
+msgstr "Kontrol bagaimana cara untuk mengubah latar belakang secara otomatis"
 
-#: src/prefs.js:445
+#: src/prefs.ts:333
 msgid ""
 "\n"
 "    <b>Sequential:</b> Preserve the directory sequence (descending order).\n"
@@ -290,15 +373,52 @@ msgid ""
 "    <b>Random:</b> Randomly select wallpapers from the directory.\n"
 "    "
 msgstr ""
+"\n"
+"    <b>Sequential:</b> Pertahankan urutan direktori (urutan menurun).\n"
+"    <b>Inverse Sequential:</b> Ambil wallpaper dalam urutan yang berlawanan "
+"(urutan menaik).\n"
+"    <b>Acak:</b> Pilih wallpaper secara acak dari direktori.\n"
+"    "
 
-#: src/prefs.js:452
+#: src/prefs.ts:339
 msgid "Sequential"
-msgstr ""
+msgstr "Berurutan"
 
-#: src/prefs.js:453
+#: src/prefs.ts:339
 msgid "Inverse Sequential"
-msgstr ""
+msgstr "Berurutan Terbalik"
 
-#: src/prefs.js:454
+#: src/prefs.ts:339
 msgid "Random"
-msgstr ""
+msgstr "Acak"
+
+#~ msgid "Cancel"
+#~ msgstr "Batal"
+
+#~ msgid "This feature requires Gtk 4.8 or above"
+#~ msgstr "FItur ini memerlukan Gtk 4.8 atau diatasnya"
+
+#~ msgid "Bounds Inset"
+#~ msgstr "Inset Batas"
+
+#~ msgid ""
+#~ "Adjust edges of the overview rounded-rect bounds (positive = shrink "
+#~ "inward)"
+#~ msgstr ""
+#~ "Sesuaikan tepi batas rounded-rect pada tampilan ikhtisar (nilai positif = "
+#~ "menyusut ke dalam)"
+
+#~ msgid "Left"
+#~ msgstr "Kiri"
+
+#~ msgid "Top"
+#~ msgstr "Atas"
+
+#~ msgid "Right"
+#~ msgstr "Kanan"
+
+#~ msgid "Bottom"
+#~ msgstr "Bawah"
+
+#~ msgid "Force gtk4paintablesink"
+#~ msgstr "Paksa gtk4paintablesin"

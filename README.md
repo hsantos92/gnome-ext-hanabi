@@ -1,10 +1,10 @@
-<p align="center"><img src="https://raw.githubusercontent.com/jeffshee/gnome-ext-hanabi/master/res/sparkler.svg" width="256"></p>
+<p align="center"><img src="res/sparkler.svg" width="256"></p>
 
 <p align="center">Live Wallpaper for GNOME</p>  
 <p align="center">Hanabi 花火【はなび】(n) fireworks</p>
 <p align="center">( ・ω・)o─━・*:'・:・゜'・:※</p>
 
-# Gnome Shell Extension - Hanabi
+# GNOME Shell Extension - Hanabi
 
 If you like my project, please consider buying me a coffee!! (⁎˃ ꇴ ˂⁎)ｯ
 
@@ -22,54 +22,63 @@ Your support is truly appreciated!
 
 ## Demo 📽️
 
-Please click on the image to view <i>(redirect to YouTube)</i>
+Please click on the image to view _(redirect to YouTube)_
 
 [![](https://i3.ytimg.com/vi/BWjXl4h9_BA/maxresdefault.jpg)](https://www.youtube.com/watch?v=BWjXl4h9_BA)
 [Wallpaper used in demo](https://www.youtube.com/watch?v=2pBj0RKN3Y8)
 
+## Hanabi has migrated to TypeScript!
+
+> [!IMPORTANT]
+> The TypeScript rewrite has landed on the main branch~ ✨
+> Better type safety and maintainability, targeting **GNOME 50+, Wayland only**.
+>
+> The `javascript` branch is in **maintenance mode** for GNOME 45–50 — bugs still
+> get fixed there, but no new fireworks. (・ω・)ノ
+
 ## GNOME Shell Support
 
-| Version | ≤41 | 42  | 43  | 44  | 45  | 46  | 47  | 48  |
-| :-----: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| Status  | ⛔  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | 🚧  |
-
-See also the section [Troubleshooting](#troubleshooting), for version-specific known issues.
+| Version |  42–44   |    45–50     |  50+   |
+| :-----: | :------: | :----------: | :----: |
+| Status  |    ⚠️    |      ✅      |   ✅   |
+| Branch  | `legacy` | `javascript` | `main` |
 
 ## Installation
 
-1. Clone the repo
+1. Clone the branch for your GNOME Shell version
 
--   **For GNOME 48 (experimental)**
+- **GNOME 50 and later** (TypeScript, Wayland only) 🔥
 
-    ```
-    git clone https://github.com/jeffshee/gnome-ext-hanabi.git -b gnome-48
-    ```
-
--   **For GNOME 45 and later**
-    ```
+    ```bash
     git clone https://github.com/jeffshee/gnome-ext-hanabi.git
     ```
--   **For GNOME 44 and earlier**
-    ```
-    git clone https://github.com/jeffshee/gnome-ext-hanabi.git -b legacy
+
+- **GNOME 45–50** (JavaScript, X11 and Wayland)
+
+    ```bash
+    git clone https://github.com/jeffshee/gnome-ext-hanabi.git -b javascript
     ```
 
-2. Run the installation script (Require `meson`)
+2. Run the installation script
 
-    ```
+    ```bash
     cd gnome-ext-hanabi
-    ./run.sh install
+    make install
     ```
+
+    **Build dependencies**
+    - `main` branch: `meson`, `node`, and `npm`
+    - `javascript` branch: `meson`
 
 3. Restart GNOME Shell
+
 4. Enable the Hanabi extension
+
 5. Choose your video wallpaper in the extension preference window
 
 ### Distro-specific Guides
 
--   [Installation Guide for Ubuntu/Pop!\_OS 22.04](docs/ubuntu-22-04.md)
--   [Installation Guide for Ubuntu 23.04](docs/ubuntu-23-04.md)
--   [Installation Guide for openSUSE Tumbleweed](docs/opensuse-tumbleweed.md)
+See the [distro-specific guides](docs/distro/) for installation instructions.
 
 ### Troubleshooting
 
@@ -86,40 +95,39 @@ See also the section [Troubleshooting](#troubleshooting), for version-specific k
      `rm -rf ~/.cache/gstreamer-1.0/`  
      After that, check if `gst-inspect-1.0 nvcodec` reports all its features.
 
-3. The GNOME Shell keeps crashing after enabling Hanabi, help!  
-   You can try to disable the extension from tty ( <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F3</kbd> ):
-    ```
-    gnome-extensions disable hanabi-extension@jeffshee.github.io
-    ```
+3. Blur My Shell — wallpaper becomes semi-transparent  
+   If you use the [Blur My Shell](https://github.com/aunetx/blur-my-shell) extension with **Applications → Applications blur → Enable all by default** turned on, add an exception for the Hanabi renderer.
 
-### Optimization
+    In Blur My Shell settings, go to **Applications → Applications blur → Blacklist** and add:  
+     `io.github.jeffshee.HanabiRenderer`
 
-Hanabi extension can utilize `clappersink` from [Clapper](https://github.com/Rafostar/clapper) for the best performance if installed.
-
-For this to work, Clapper must be installed **from the package manager and not from Flatpak/Snap**.
+## Advanced Usage
 
 <details>
-  <summary>Performance comparison</summary>
+<summary>Video backend selection &amp; scripting</summary>
 
--   With `clappersink`
-    ![](https://user-images.githubusercontent.com/25530920/190872365-f1cefa30-6e11-40e4-bf99-1b79c3790d6b.png)
+Hanabi uses `gtk4paintablesink` (from GStreamer) as the default video sink, which offers good performance and broad compatibility.
 
--   Without `clappersink` (Using `Gtk.MediaFile` as default fallback)
-    ![](https://user-images.githubusercontent.com/25530920/190872366-7fce5703-2310-4c68-81c7-f17a8a15019f.png)
+Optionally, `clappersink` from [Clapper](https://github.com/Rafostar/clapper) can be used instead via **Preferences → Developer → Prefer clappersink**. Clapper must be installed **from the package manager and not from Flatpak/Snap** for this to work.
 
-</details>
-
-## Advanced Customization
+> There is a known [compatibility issue](https://github.com/Rafostar/clapper/issues/560) with `clappersink` on native installs with GStreamer 1.26+. If you encounter crashes after enabling this option, please disable it.
 
 For more advanced customization, learn how to write scripts for Hanabi extension!  
 Check out the [scripting guide](docs/scripting.md) for detailed instructions and examples.
 
+</details>
+
 ## Get Involved 🚀
 
-Contributors are welcome! Let's make Hanabi extension better together~  
-If you're interested in translating, you can help on [Hosted Weblate](https://hosted.weblate.org/projects/gnome-ext-hanabi/gnome-ext-hanabi/).
+Contributors are welcome! Let's make Hanabi extension better together~
 
-### Translation Status
+### Development
+
+See the [development guide](docs/dev.md) for instructions.
+
+### Translation
+
+If you're interested in translating, you can help on [Hosted Weblate](https://hosted.weblate.org/projects/gnome-ext-hanabi/gnome-ext-hanabi/).
 
 [![Translation status](https://hosted.weblate.org/widget/gnome-ext-hanabi/gnome-ext-hanabi/multi-auto.svg)](https://hosted.weblate.org/engage/gnome-ext-hanabi/)
 
