@@ -76,6 +76,18 @@ Please click on the image to view _(redirect to YouTube)_
 
 5. Choose your video wallpaper in the extension preference window
 
+### Choose a single monitor
+
+In Hanabi preferences, under **General → Wallpaper Monitor**, choose the display
+that should play the live wallpaper. **All Monitors** preserves the default behavior.
+Other displays keep the normal GNOME wallpaper, including in the overview and on
+the lock screen. Changes apply automatically and restart video playback.
+
+The selection remembers the connector (for example, `DP-1` or `HDMI-1`). If that
+output is disconnected, live wallpaper stops until it is reconnected. Moving a
+display to another port may require selecting it again. Mirrored displays share
+the same desktop and cannot show different wallpapers.
+
 ### Distro-specific Guides
 
 See the [distro-specific guides](docs/distro/) for installation instructions.

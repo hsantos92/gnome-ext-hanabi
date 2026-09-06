@@ -17,6 +17,7 @@
 
 import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
+import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
 
 import {
@@ -39,6 +40,7 @@ export default class HanabiExtensionPreferences extends ExtensionPreferences {
         page.add(generalGroup);
         prefsRowVideoPath(win, generalGroup);
         prefsRowFitMode(win, generalGroup);
+        prefsRowMonitor(win, generalGroup);
         prefsRowBoolean(win, generalGroup, _('Mute Audio'), 'mute', '');
         prefsRowInt(win, generalGroup, _('Volume Level'), 'volume', '', 0, 100, 1, 10);
         prefsRowBoolean(win, generalGroup, _('Random Start Position'), 'random-start-position',
@@ -230,6 +232,67 @@ function prefsRowDirectoryPath(window: PrefsWindow, prefsGroup: Adw.PreferencesG
                 // Dialog dismissed.
             }
         });
+    });
+}
+
+function prefsRowMonitor(window: PrefsWindow, prefsGroup: Adw.PreferencesGroup): void {
+    const settings = window.settings;
+    const monitors = Gdk.Display.get_default()?.get_monitors();
+    const row = new Adw.ComboRow({
+        title: _('Wallpaper Monitor'),
+        subtitle: _('Other monitors keep the normal wallpaper. Selection follows the display connector.'),
+    });
+    prefsGroup.add(row);
+
+    let connectors: string[] = [];
+    let updating = false;
+    const refresh = (): void => {
+        updating = true;
+        connectors = [''];
+        const labels = [_('All Monitors')];
+        for (let i = 0; i < (monitors?.get_n_items() ?? 0); i++) {
+            const monitor = monitors!.get_item(i) as Gdk.Monitor;
+            const connector = monitor.get_connector();
+            if (!connector || connectors.includes(connector))
+                continue;
+            connectors.push(connector);
+            labels.push(`${monitor.get_model() ?? _('Monitor')} (${connector})`);
+        }
+        const selected = settings.get_string('wallpaper-monitor');
+        if (!connectors.includes(selected)) {
+            connectors.push(selected);
+            labels.push(`${selected} (${_('Disconnected')})`);
+        }
+        row.model = Gtk.StringList.new(labels);
+        row.selected = connectors.indexOf(selected);
+        updating = false;
+    };
+    refresh();
+    row.connect('notify::selected', () => {
+        if (!updating && row.selected < connectors.length)
+            settings.set_string('wallpaper-monitor', connectors[row.selected]);
+    });
+    const monitorsChangedId = monitors?.connect('items-changed', refresh);
+    const settingsChangedId = settings.connect('changed::wallpaper-monitor', () => {
+        // A selection writes this setting synchronously. Replacing the model
+        // while GTK is activating that item can destroy widgets still in use.
+        const selected = settings.get_string('wallpaper-monitor');
+        if (connectors[row.selected] === selected)
+            return;
+        const index = connectors.indexOf(selected);
+        if (index >= 0) {
+            updating = true;
+            row.selected = index;
+            updating = false;
+        } else {
+            refresh();
+        }
+    });
+    window.connect('close-request', () => {
+        if (monitorsChangedId)
+            monitors!.disconnect(monitorsChangedId);
+        settings.disconnect(settingsChangedId);
+        return false;
     });
 }
 

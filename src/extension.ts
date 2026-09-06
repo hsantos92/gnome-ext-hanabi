@@ -143,6 +143,11 @@ export default class HanabiExtension extends Extension {
         );
         this.signalConnections.push([Main.layoutManager, monitorsChangedId]);
 
+        const monitorSettingChangedId = this.settings!.connect(
+            'changed::wallpaper-monitor', () => this.killCurrentProcess()
+        );
+        this.signalConnections.push([this.settings!, monitorSettingChangedId]);
+
         const sessionModeUpdatedId = Main.sessionMode.connect('updated', () => {
             this.onSessionModeUpdated();
         });

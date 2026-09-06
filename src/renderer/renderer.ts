@@ -337,7 +337,14 @@ const HanabiRenderer = GObject.registerClass(
         }
 
         private buildUI(): void {
-            this.monitors.forEach((gdkMonitor, index) => {
+            const connector = extSettings?.get_string('wallpaper-monitor') ?? '';
+            // Filter before indexing so a selected secondary monitor initializes the player.
+            const monitors = this.monitors.filter(monitor =>
+                !connector || monitor.get_connector() === connector);
+            // Stay alive without a window until the extension restarts us on hotplug.
+            if (monitors.length === 0)
+                this.hold();
+            monitors.forEach((gdkMonitor, index) => {
                 let widget: Gtk.Widget | null = this.getWidgetFromSharedPaintable();
 
                 if (index > 0 && !widget)

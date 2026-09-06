@@ -223,7 +223,8 @@ export const LiveWallpaper = GObject.registerClass(
                 actor => actor.meta_window?.title?.includes(APPLICATION_ID)
             );
 
-            const numMonitors = global.display.get_n_monitors();
+            const numMonitors = this.settings.get_string('wallpaper-monitor')
+                ? 1 : global.display.get_n_monitors();
             if (hanabiWindowActors.length < numMonitors) {
                 logger.debug(
                     `Hanabi windows (${hanabiWindowActors.length}) < monitors (${numMonitors}), rejecting`

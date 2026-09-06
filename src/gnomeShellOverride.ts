@@ -114,6 +114,11 @@ export class GnomeShellOverride {
                 return function (this: Background.BackgroundManager) {
                     const backgroundActor = originalMethod.call(this);
 
+                    const connector = thisRef.settings.get_string('wallpaper-monitor');
+                    if (connector && global.backend.get_monitor_manager()
+                        .get_monitor_for_connector(connector) !== backgroundActor.monitor)
+                        return backgroundActor;
+
                     const isLockScreen = (this._container as (Clutter.Actor & { style_class?: string }) | null)?.style_class?.includes('screen-shield-background') ?? false;
                     if (isLockScreen && !thisRef.settings.get_boolean('show-on-lock-screen')) {
                         logger.debug('Skipping live wallpaper on lock screen');
@@ -266,6 +271,10 @@ export class GnomeShellOverride {
                         .filter(app => app.get_n_windows() > 0);
                 };
             }
+        );
+
+        this.settingsChangedIds.push(
+            this.settings.connect('changed::wallpaper-monitor', () => this.reloadBackgrounds())
         );
 
         this.settingsChangedIds.push(
