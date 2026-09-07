@@ -18,7 +18,7 @@ Other GNOME extensions can continue updating normally.
 
 ## Install
 
-The current custom version is on `main`. Older GNOME releases and X11 are not
+The current custom version is on `master`. Older GNOME releases and X11 are not
 supported by this version; consult upstream for legacy versions.
 
 Build tools: Node.js, npm, Make, Meson, Ninja, gettext, and GLib tools.
@@ -26,7 +26,7 @@ Playback requires GJS, GTK 4, and GStreamer with the GTK 4 video sink and codecs
 for your videos. `GstPlay` is preferred; the GTK media backend is a fallback.
 
 ```bash
-git clone -b main https://github.com/hsantos92/gnome-ext-hanabi.git
+git clone -b master https://github.com/hsantos92/gnome-ext-hanabi.git
 cd gnome-ext-hanabi
 make install
 ```
@@ -141,7 +141,7 @@ Use the full `npm run lint` command so tests and tooling are checked as well as
 [Wallpaper scripting](docs/scripting.md) uses this fork's settings namespace.
 
 GitHub Actions checks TypeScript and lint, then packages the extension ZIP.
-The workflow supports pushes and pull requests to both `main` and `master`.
+The workflow supports pushes and pull requests to `master`.
 
 ## Credits and license
 
