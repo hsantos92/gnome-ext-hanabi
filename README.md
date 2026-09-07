@@ -1,182 +1,150 @@
-<p align="center"><img src="res/sparkler.svg" width="256"></p>
-
-<p align="center">Live Wallpaper for GNOME</p>  
-<p align="center">Hanabi 花火【はなび】(n) fireworks</p>
-<p align="center">( ・ω・)o─━・*:'・:・゜'・:※</p>
-
 # Hanabi Custom
 
-This personal fork uses extension ID `hanabi-extension@hsantos92.github.io` so
-updates for the official Hanabi extension cannot overwrite it. Its settings and
-renderer D-Bus name are also separate. Install updates from this repository;
-upstream improvements must be merged into this fork before rebuilding.
+Live video wallpaper for **GNOME Shell 50 on Wayland**, based on
+[Hanabi by Jeff Shee and contributors](https://github.com/jeffshee/gnome-ext-hanabi).
+This fork adds monitor selection and automatic pausing for Steam games.
 
-When switching from the official ID, disable **Hanabi Extension** and enable
-**Hanabi Custom** after logging out and back in. Run only one copy at a time.
-To preserve existing settings before switching, run:
+## Features
+
+- Play video on one selected monitor or all monitors.
+- Keep the normal GNOME wallpaper on unselected monitors, including in the overview and lock screen.
+- Pause for detected Steam games, even when minimized or on another workspace.
+- Retain Hanabi's video fitting, audio controls, wallpaper rotation, and other auto-pause options.
+
+The extension is named **Hanabi Custom** and uses ID
+`hanabi-extension@hsantos92.github.io`. Its settings and renderer identity are
+separate from official Hanabi, so official extension updates cannot overwrite it.
+Other GNOME extensions can continue updating normally.
+
+## Install
+
+The current custom version is on `main`. Older GNOME releases and X11 are not
+supported by this version; consult upstream for legacy versions.
+
+Build tools: Node.js, npm, Make, Meson, Ninja, gettext, and GLib tools.
+Playback requires GJS, GTK 4, and GStreamer with the GTK 4 video sink and codecs
+for your videos. `GstPlay` is preferred; the GTK media backend is a fallback.
+
+```bash
+git clone -b main https://github.com/hsantos92/gnome-ext-hanabi.git
+cd gnome-ext-hanabi
+make install
+```
+
+Log out and back in, then enable **Hanabi Custom** in the Extensions app. Open its
+preferences and select a video under **General → Video Path**.
+
+### Switching from official Hanabi
+
+Disable **Hanabi Extension** before enabling **Hanabi Custom**. Run only one copy.
+To copy your old settings after installation, first close preferences, then run:
 
 ```bash
 dconf dump /io/github/jeffshee/hanabi-extension/ > hanabi-settings-backup.ini
 dconf load /io/github/hsantos92/hanabi-extension/ < hanabi-settings-backup.ini
 ```
 
-Based on [Hanabi by Jeff Shee and contributors](https://github.com/jeffshee/gnome-ext-hanabi).
+Keep the backup file. The custom settings live at
+`/io/github/hsantos92/hanabi-extension/`.
 
+## Settings
 
-If you like my project, please consider buying me a coffee!! (⁎˃ ꇴ ˂⁎)ｯ
+### Monitor selection
 
-[![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/jeffshee)
-[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/jeffshee)
-[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeffshee)
+Choose **General → Wallpaper Monitor**. **All Monitors** is the default.
+Changes apply automatically and restart playback.
 
-Also please don't forget to hit that star button! 🌟  
-Feel free to open an issue for problems or suggestions 🤗  
-Your support is truly appreciated!
+Selection follows the connector, such as `DP-1` or `HDMI-1`. Disconnecting it
+stops live wallpaper until reconnection. Moving a display to another port may
+require selecting it again. Mirrored displays share a desktop and cannot show
+different wallpapers.
 
-## Join our Discord!
+### Steam auto-pause
 
-[![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/mP7yg4gX7g)
+Enable **Auto Pause → Pause on Steam Game**. The extension checks game windows
+across all workspaces every three seconds. It resumes after the last detected
+game window closes, unless another pause condition or a manual pause remains.
+Opening the Steam library alone does not pause playback.
 
-## Demo 📽️
+Detection uses Proton's `steam_app_<id>` window identity and Steam app IDs in
+window processes. Games without a window or these identifiers may not be detected.
+**Pause on Maximize or Fullscreen → Any Monitor** is a broader fallback, but also
+pauses for ordinary maximized applications on your other monitors.
 
-Please click on the image to view _(redirect to YouTube)_
+### Performance and video backends
 
-[![](https://i3.ytimg.com/vi/BWjXl4h9_BA/maxresdefault.jpg)](https://www.youtube.com/watch?v=BWjXl4h9_BA)
-[Wallpaper used in demo](https://www.youtube.com/watch?v=2pBj0RKN3Y8)
+- **Enable Graphics Offload** can reduce rendering overhead. In a short test on
+  an RTX 4090 with the same 720p video, renderer CPU use fell from 24.0% to 10.2%
+  of one logical CPU. Results depend on the system and video; this is not a
+  general benchmark. Disable it if rendering becomes unreliable.
+- Graphics offload is separate from hardware video decoding. NVIDIA decoding
+  was verified with offload both on and off.
+- Keep **Force GtkMediaFile** off to allow the preferred GStreamer playback path.
+- Turn **Show on Lock Screen** off to stop playback while locked.
+- Lower-resolution or lower-frame-rate videos can reduce playback work.
 
-## Hanabi has migrated to TypeScript!
+Restart Hanabi after changing startup-only backend settings, including graphics
+offload and **Prefer clappersink**. Video path, monitor, and auto-pause settings
+apply without a restart.
 
-> [!IMPORTANT]
-> The TypeScript rewrite has landed on the main branch~ ✨
-> Better type safety and maintainability, targeting **GNOME 50+, Wayland only**.
->
-> The `javascript` branch is in **maintenance mode** for GNOME 45–50 — bugs still
-> get fixed there, but no new fireworks. (・ω・)ノ
+The default sink is `gtk4paintablesink`. **Prefer clappersink** is optional and
+requires a native Clapper GStreamer plugin. On the tested Arch/NVIDIA setup,
+both the packaged plugin and a current source build crashed in Clapper's OpenGL
+uploader. Keep it disabled on affected systems. See the
+[Clapper investigation](docs/clapper-investigation.md) for versions and findings.
 
-## GNOME Shell Support
+A Clapper application wrapper using `--video-sink gtk4paintablesink` avoids
+`clappersink`; it does not repair that plugin or affect Hanabi's backend choice.
 
-| Version |  42–44   |    45–50     |  50+   |
-| :-----: | :------: | :----------: | :----: |
-| Status  |    ⚠️    |      ✅      |   ✅   |
-| Branch  | `legacy` | `javascript` | `main` |
+## Updates
 
-## Installation
+Custom updates come from this repository. GNOME's official Hanabi updates do
+not update this fork. To update an existing checkout without overwriting local
+commits:
 
-1. Clone the branch for your GNOME Shell version
+```bash
+git pull --ff-only
+make install
+```
 
-- **GNOME 50 and later** (TypeScript, Wayland only) 🔥
+Log out and back in afterward. If Git reports diverging branches, review and
+merge the changes before installing. Upstream fixes must also be deliberately
+merged into this fork.
 
-    ```bash
-    git clone -b main https://github.com/hsantos92/gnome-ext-hanabi.git
-    ```
+## Troubleshooting
 
-- **GNOME 45–50** (JavaScript, X11 and Wayland)
+- **No video:** verify the video path and availability of `gtk4paintablesink`
+  with `gst-inspect-1.0 gtk4paintablesink`. Install the appropriate codecs and
+  GTK media backend for your distribution.
+- **High CPU:** confirm hardware decoding rather than assuming a settings toggle
+  enables it. On NVIDIA, `gst-inspect-1.0 nvh264dec` checks plugin availability;
+  `nvidia-smi pmon -s um` can show decoder activity for the renderer process.
+- **Blur My Shell transparency:** if application blur applies to all windows,
+  add `io.github.hsantos92.HanabiRenderer` to its application blacklist.
+- **Logs:** run `make log` from the checkout to follow GNOME Shell messages.
 
-    ```bash
-    git clone https://github.com/jeffshee/gnome-ext-hanabi.git -b javascript
-    ```
+## Development
 
-2. Run the installation script
+Run these checks from the repository root before pushing:
 
-    ```bash
-    cd gnome-ext-hanabi
-    make install
-    ```
+```bash
+npm ci
+npm run typecheck
+npm run lint
+node tests/steam-auto-pause.mjs
+npm run build
+```
 
-    **Build dependencies**
-    - `main` branch: `meson`, `node`, and `npm`
-    - `javascript` branch: `meson`
+Use the full `npm run lint` command so tests and tooling are checked as well as
+`src/`. See [lint tooling](tools/README.md) for setup and
+[development commands](docs/dev.md) for build and release details.
+[Wallpaper scripting](docs/scripting.md) uses this fork's settings namespace.
 
-3. Restart GNOME Shell
+GitHub Actions checks TypeScript and lint, then packages the extension ZIP.
+The workflow supports pushes and pull requests to both `main` and `master`.
 
-4. Enable the Hanabi extension
+## Credits and license
 
-5. Choose your video wallpaper in the extension preference window
-
-### Choose a single monitor
-
-In Hanabi preferences, under **General → Wallpaper Monitor**, choose the display
-that should play the live wallpaper. **All Monitors** preserves the default behavior.
-Other displays keep the normal GNOME wallpaper, including in the overview and on
-the lock screen. Changes apply automatically and restart video playback.
-
-The selection remembers the connector (for example, `DP-1` or `HDMI-1`). If that
-output is disconnected, live wallpaper stops until it is reconnected. Moving a
-display to another port may require selecting it again. Mirrored displays share
-the same desktop and cannot show different wallpapers.
-
-### Pause while playing Steam games
-
-Enable **Auto Pause → Pause on Steam Game** to pause while a detected Steam game
-window is open, including minimized games and games on other workspaces. Playback
-resumes within about three seconds after the last game window closes, unless
-another pause condition or your manual pause still applies. The Steam library
-alone does not trigger this setting.
-
-Detection uses Proton's `steam_app_<id>` window identity and Steam app IDs from
-window processes. Games without a window or without these identifiers may not be
-detected; **Pause on Maximize or Fullscreen → Any Monitor** is a broader fallback.
-
-### Distro-specific Guides
-
-See the [distro-specific guides](docs/distro/) for installation instructions.
-
-### Troubleshooting
-
-1. The video doesn't play / The extension is enabled but nothing happens  
-   The GTK4 media backend is not pre-installed on some distributions (such as PopOS).
-
-    To install the backend:  
-     `sudo apt install libgtk-4-media-gstreamer`
-
-2. High CPU usage during video playback (proprietary NVIDIA)  
-   Your hardware acceleration may not work properly, see this [issue](https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1478).
-
-    To delete the GStreamer cache:  
-     `rm -rf ~/.cache/gstreamer-1.0/`  
-     After that, check if `gst-inspect-1.0 nvcodec` reports all its features.
-
-3. Blur My Shell — wallpaper becomes semi-transparent  
-   If you use the [Blur My Shell](https://github.com/aunetx/blur-my-shell) extension with **Applications → Applications blur → Enable all by default** turned on, add an exception for the Hanabi renderer.
-
-    In Blur My Shell settings, go to **Applications → Applications blur → Blacklist** and add:  
-     `io.github.hsantos92.HanabiRenderer`
-
-## Advanced Usage
-
-<details>
-<summary>Video backend selection &amp; scripting</summary>
-
-Hanabi uses `gtk4paintablesink` (from GStreamer) as the default video sink, which offers good performance and broad compatibility.
-
-Optionally, `clappersink` from [Clapper](https://github.com/Rafostar/clapper) can be used instead via **Preferences → Developer → Prefer clappersink**. Clapper must be installed **from the package manager and not from Flatpak/Snap** for this to work.
-
-> There is a known [compatibility issue](https://github.com/Rafostar/clapper/issues/560) with `clappersink` on native installs with GStreamer 1.26+. If you encounter crashes after enabling this option, please disable it.
-
-For more advanced customization, learn how to write scripts for Hanabi extension!  
-Check out the [scripting guide](docs/scripting.md) for detailed instructions and examples.
-
-</details>
-
-## Get Involved 🚀
-
-Contributors are welcome! Let's make Hanabi extension better together~
-
-### Development
-
-See the [development guide](docs/dev.md) for instructions.
-
-### Translation
-
-If you're interested in translating, you can help on [Hosted Weblate](https://hosted.weblate.org/projects/gnome-ext-hanabi/gnome-ext-hanabi/).
-
-[![Translation status](https://hosted.weblate.org/widget/gnome-ext-hanabi/gnome-ext-hanabi/multi-auto.svg)](https://hosted.weblate.org/engage/gnome-ext-hanabi/)
-
-### Contributors ✨
-
-<a href="https://github.com/jeffshee/gnome-ext-hanabi/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=jeffshee/gnome-ext-hanabi" />
-</a>
-
-Made with [contributors-img](https://contrib.rocks).  
-Icons made by [Freepik](http://www.freepik.com/) from [Flaticon](https://www.flaticon.com)
+Original Hanabi code and translations are by Jeff Shee and contributors.
+This fork retains the upstream translation domain and copyright notices.
+Licensed under [GPL-3.0-or-later](LICENSE).
