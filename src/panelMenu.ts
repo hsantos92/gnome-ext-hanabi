@@ -53,7 +53,8 @@ export class HanabiPanelMenu {
         const indicatorName = `${this.extension.metadata.name} Indicator`;
         this.indicator = new PanelMenu.Button(0.0, indicatorName, false);
         const icon = new St.Icon({
-            gicon: Gio.icon_new_for_string(
+            icon_name: 'preferences-desktop-wallpaper-symbolic',
+            fallback_gicon: Gio.icon_new_for_string(
                 GLib.build_filenamev([this.extension.path, 'hanabi-symbolic.svg'])
             ),
             style_class: 'system-status-icon',
