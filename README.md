@@ -1,6 +1,6 @@
 # Hanabi Custom
 
-Live video wallpaper for **GNOME Shell 50 on Wayland**, based on
+Live video wallpaper for **GNOME Shell 50 and 51 on Wayland**, based on
 [Hanabi by Jeff Shee and contributors](https://github.com/jeffshee/gnome-ext-hanabi).
 This fork adds monitor selection and automatic pausing for Steam games.
 
