@@ -144,8 +144,51 @@ function getFboOffset(actor: Clutter.Actor): [number, number] {
     return [Math.trunc(x1 - box.x1), Math.trunc(y1 - box.y1)];
 }
 
+// GNOME 51 moved GLSLEffect to Clutter and changed uniform locations to
+// names. Keep the compatibility surface local while our typings target 50.
+interface ShaderEffect51 extends Clutter.OffscreenEffect {
+    set_uniform_float(name: string, components: number, values: number[]): void;
+}
+const ShaderEffect51 = (Clutter as unknown as {
+    ShaderEffect?: new () => ShaderEffect51;
+}).ShaderEffect;
+
+interface RoundedCornersShader extends Clutter.OffscreenEffect {
+    setFloat(name: string, components: number, values: number[]): void;
+}
+
+const RoundedCornersShader: new () => RoundedCornersShader = ShaderEffect51
+    ? GObject.registerClass(class HanabiShader51 extends ShaderEffect51 {
+        vfunc_get_static_snippet(): Cogl.Snippet {
+            // Append to the default texture sampling, do not replace it.
+            return Cogl.Snippet.new(
+                Cogl.SnippetHook.FRAGMENT,
+                fragmentShaderDeclarations,
+                fragmentShaderCode
+            );
+        }
+
+        setFloat(name: string, components: number, values: number[]): void {
+            this.set_uniform_float(name, components, values);
+        }
+    })
+    : GObject.registerClass(class HanabiShader50 extends Shell.GLSLEffect {
+        vfunc_build_pipeline(): void {
+            this.add_glsl_snippet(
+                Cogl.SnippetHook.FRAGMENT,
+                fragmentShaderDeclarations,
+                fragmentShaderCode,
+                false
+            );
+        }
+
+        setFloat(name: string, components: number, values: number[]): void {
+            this.set_uniform_float(this.get_uniform_location(name), components, values);
+        }
+    });
+
 export const RoundedCornersEffect = GObject.registerClass(
-    class RoundedCornersEffect extends Shell.GLSLEffect {
+    class RoundedCornersEffect extends RoundedCornersShader {
         // Pending debounced log timers, keyed by label.
         private logTimeouts = new Map<string, number>();
 
@@ -174,15 +217,6 @@ export const RoundedCornersEffect = GObject.registerClass(
                     logger.debug(`${label}:`, ...args);
                     return GLib.SOURCE_REMOVE;
                 })
-            );
-        }
-
-        vfunc_build_pipeline(): void {
-            this.add_glsl_snippet(
-                Cogl.SnippetHook.FRAGMENT,
-                fragmentShaderDeclarations,
-                fragmentShaderCode,
-                false
             );
         }
 
@@ -229,14 +263,14 @@ export const RoundedCornersEffect = GObject.registerClass(
             this.textureOffsetY = offsetY;
             this.debugDebounced('textureMapping', width, height, scale, offsetX, offsetY);
 
-            this.set_uniform_float(
-                this.get_uniform_location('pixel_step'),
+            this.setFloat(
+                'pixel_step',
                 2,
                 [1.0 / width, 1.0 / height]
             );
             const [x1, y1, x2, y2] = this.bounds;
-            this.set_uniform_float(
-                this.get_uniform_location('bounds'),
+            this.setFloat(
+                'bounds',
                 4,
                 [
                     (x1 - offsetX) * scale,
@@ -245,13 +279,13 @@ export const RoundedCornersEffect = GObject.registerClass(
                     (y2 - offsetY) * scale,
                 ]
             );
-            this.set_uniform_float(
-                this.get_uniform_location('clip_radius'),
+            this.setFloat(
+                'clip_radius',
                 1,
                 [this.clipRadius * scale]
             );
-            this.set_uniform_float(
-                this.get_uniform_location('border_stroke'),
+            this.setFloat(
+                'border_stroke',
                 1,
                 [this.borderStroke * scale]
             );
@@ -277,8 +311,8 @@ export const RoundedCornersEffect = GObject.registerClass(
 
         setBorderColor(color: number[]): void {
             this.debugDebounced('borderColor', ...color);
-            this.set_uniform_float(
-                this.get_uniform_location('border_color'),
+            this.setFloat(
+                'border_color',
                 4,
                 color
             );
